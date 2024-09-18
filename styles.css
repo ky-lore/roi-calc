@@ -1,0 +1,144 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Container Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+    overflow: hidden; /* Prevents content overflow */
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh; /* Prevents growing too large */
+    overflow-y: auto; /* Enables scrolling if content is too large */
+}
+
+/* Heading Styles */
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Tabs Styling */
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.tab-link:hover {
+    background-color: #0056b3;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Form Element Styling */
+label {
+    font-size: 16px;
+    margin-bottom: 0px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Results Section */
+.results {
+    margin-top: 30px;
+}
+
+/* Adjusted Chart Styling */
+canvas {
+    max-width: 100%; /* Ensures charts don't overflow */
+    height: auto;
+    margin-top: 10px; /* General chart margin */
+}
+
+/* Reduced margin for the time saved chart */
+#timeChart {
+    margin-top: 5px; /* Reduce the gap */
+}
+
+/* Result Paragraphs */
+.results p {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* Logo Styling */
+header {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #ffffff;
+}
+
+.logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Discount fields section */
+.discount-fields {
+    margin-top: 15px;
+}
+
+.resultSmall {
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
