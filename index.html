@@ -26,6 +26,14 @@
             font-size: 12px;
             color: gray;
         }
+
+        .chart-tab {
+            display: none;
+        }
+
+        .chart-tab.active {
+            display: block;
+        }
     </style>
 </head>
 
@@ -142,11 +150,37 @@
             <p id="time-saved-month">Time Saved per Month: </p>
             <p id="projected-sales">Monthly Projected Sales: </p>
 
+            <div id="chart-tabs">
+                <button onclick="showChartTab('cumulative-chart')">Cumulative Chart</button>
+                <button onclick="showChartTab('time-chart')">Time Saved Chart</button>
+                <button onclick="showChartTab('speed-lead-chart')">Speed to Lead Chart</button>
+            </div>
+
             <!-- Cumulative Chart -->
-            <h4>Cumulative Monthly Fees vs Sales</h4>
-            <p>This chart compares cumulative monthly fees of SimpleTalk AI with projected sales both with and without
-                AI services.</p>
-            <canvas id="roiChart" width="400" height="200"></canvas>
+            <div id="cumulative-chart" class="chart-tab active">
+                <h4>Cumulative Monthly Fees vs Sales</h4>
+                <p>This chart compares cumulative monthly fees of SimpleTalk AI with projected sales both with and
+                    without
+                    AI services.</p>
+                <canvas id="roiChart" width="400" height="200"></canvas>
+            </div>
+
+            <!-- Time Saved Chart -->
+            <div id="time-chart" class="chart-tab">
+                <h4>Time Saved by AI</h4>
+                <p>This chart displays the amount of time saved by using AI, calculated on a daily, weekly, and monthly
+                    basis.</p>
+                <canvas id="timeChart" width="400" height="200"></canvas>
+            </div>
+
+            <!-- Speed to Lead Conversion Rate Chart -->
+            <div id="speed-lead-chart" class="chart-tab">
+                <h4>Impact of Speed-to-Lead on Conversion Rates</h4>
+                <p>This chart shows the impact of AI's speed in responding to leads on conversion rates, compared to
+                    human
+                    response times.</p>
+                <canvas id="speedToLeadChart" width="400" height="200"></canvas>
+            </div>
 
             <!-- Discount Button (hidden by default) -->
             <button id="discount-btn" style="display:none;" onclick="showDiscount()">P.A.</button>
@@ -161,19 +195,6 @@
                 <input type="number" id="monthly-cost" value="1250">
                 <small>Enter the monthly fee for SimpleTalk AI services.</small>
             </div>
-
-            <!-- Speed to Lead Conversion Rate Chart -->
-            <h4>Impact of Speed-to-Lead on Conversion Rates</h4>
-            <p>This chart shows the impact of AI's speed in responding to leads on conversion rates, compared to human
-                response
-                times.</p>
-            <canvas id="speedToLeadChart" width="400" height="200"></canvas>
-
-            <!-- Time Saved Chart -->
-            <h4>Time Saved by AI</h4>
-            <p>This chart displays the amount of time saved by using AI, calculated on a daily, weekly, and monthly
-                basis.</p>
-            <canvas id="timeChart" width="400" height="200"></canvas>
         </div>
 
     </div>
@@ -186,41 +207,38 @@
         document.getElementById('recurring-checkbox-outbound').addEventListener('change', handleRecurringCheckbox);
 
         function openTab(tabName) {
-                let tabcontent = document.getElementsByClassName("tab-content");
-                for (let i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-
-                let tablinks = document.getElementsByClassName("tab-link");
-                for (let i = 0; i < tablinks.length; i++) {
-                    tablinks[i].className = tablinks[i].className.replace(" active", "");
-                }
-
-                document.getElementById(tabName).style.display = "block";
-
-                resetCharts();
-                clearInputs(tabName); // Clear inputs while keeping AI qualification time fixed
+            let tabcontent = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
             }
 
-            function clearInputs(tabName) {
-                let inputs = document.querySelectorAll(`#${tabName} input`);
-                inputs.forEach(input => {
-                    if (input.type === 'checkbox') {
-                        input.checked = false;
-                    } else if (input.id !== 'ai-qual-time-inbound' && input.id !== 'ai-qual-time-outbound') {
-                        // Skip clearing AI qualification time fields
-                        input.value = '';
-                    }
-                });
-
-                // Clear results
-                document.getElementById('monthly-left').innerHTML = '';
-                document.getElementById('roi').innerHTML = '';
-                document.getElementById('time-saved-day').innerHTML = '';
-                document.getElementById('time-saved-week').innerHTML = '';
-                document.getElementById('time-saved-month').innerHTML = '';
+            let tablinks = document.getElementsByClassName("tab-link");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
 
+            document.getElementById(tabName).style.display = "block";
+            clearInputs(tabName);
+            resetCharts();
+        }
+
+        function clearInputs(tabName) {
+            let inputs = document.querySelectorAll(`#${tabName} input`);
+            inputs.forEach(input => {
+                if (input.type === 'checkbox') {
+                    input.checked = false;
+                } else if (input.id !== 'ai-qual-time-inbound' && input.id !== 'ai-qual-time-outbound') {
+                    input.value = '';
+                }
+            });
+
+            // Clear results
+            document.getElementById('monthly-left').innerHTML = '';
+            document.getElementById('roi').innerHTML = '';
+            document.getElementById('time-saved-day').innerHTML = '';
+            document.getElementById('time-saved-week').innerHTML = '';
+            document.getElementById('time-saved-month').innerHTML = '';
+        }
 
         function resetCharts() {
             if (roiChart) roiChart.destroy();
@@ -270,8 +288,7 @@
                 monthlyLeftOnTableAI *= 12;
             }
 
-            // Corrected Time Saved Calculation (time saved per call * missed calls per time unit)
-            const timeSavedPerCallAI = (humanQualTime - aiQualTime) / 60; // Converted to hours
+            const timeSavedPerCallAI = (humanQualTime - aiQualTime) / 60;
             const timeSavedPerDay = (missedCalls / 7) * timeSavedPerCallAI;
             const timeSavedPerWeek = missedCalls * timeSavedPerCallAI;
             const timeSavedPerMonth = timeSavedPerWeek * 4;
@@ -307,8 +324,7 @@
                 monthlyLeftOnTableAI *= 12;
             }
 
-            // Corrected Time Saved Calculation (time saved per lead * leads per time unit)
-            const timeSavedPerLeadAI = (humanQualTime - aiQualTime) / 60; // Converted to hours
+            const timeSavedPerLeadAI = (humanQualTime - aiQualTime) / 60;
             const timeSavedPerDay = leadsPerDay * timeSavedPerLeadAI;
             const timeSavedPerWeek = leadsPerDay * 7 * timeSavedPerLeadAI;
             const timeSavedPerMonth = leadsPerDay * 30 * timeSavedPerLeadAI;
@@ -548,18 +564,35 @@
             let startupCost = parseFloat(document.getElementById('startup-cost').value) || 0;
             let monthlyCost = parseFloat(document.getElementById('monthly-cost').value) || 0;
 
-            let clientValue = parseFloat(document.getElementById('avg-client-value-outbound').value) || 0;
-            let leadsPerDay = parseFloat(document.getElementById('leads-per-day').value) || 0;
-            let closeRate = parseFloat(document.getElementById('close-rate-outbound').value) / 100 || 0;
+            const currentTab = document.getElementById('inbound').style.display !== 'none' ? 'inbound' : 'outbound';
 
-            let leadsPerMonth = leadsPerDay * 30;
-            let monthlyLeftOnTableAI = clientValue * leadsPerMonth * closeRate;
+            if (currentTab === 'inbound') {
+                let clientValue = parseFloat(document.getElementById('client-value').value) || 0;
+                let missedCalls = parseFloat(document.getElementById('missed-calls').value) || 0;
+                let closeRate = parseFloat(document.getElementById('close-rate').value) / 100 || 0;
 
-            if (document.getElementById('recurring-checkbox-outbound').checked) {
-                monthlyLeftOnTableAI *= 12;
+                let missedCallsPerMonth = missedCalls * 4;
+                let monthlyLeftOnTableAI = clientValue * missedCallsPerMonth * closeRate;
+
+                if (document.getElementById('recurring-checkbox').checked) {
+                    monthlyLeftOnTableAI *= 12;
+                }
+
+                generateCumulativeChartMonthly(monthlyCost, monthlyLeftOnTableAI, monthlyLeftOnTableAI * 0.7, startupCost, monthlyCost);
+            } else {
+                let clientValue = parseFloat(document.getElementById('avg-client-value-outbound').value) || 0;
+                let leadsPerDay = parseFloat(document.getElementById('leads-per-day').value) || 0;
+                let closeRate = parseFloat(document.getElementById('close-rate-outbound').value) / 100 || 0;
+
+                let leadsPerMonth = leadsPerDay * 30;
+                let monthlyLeftOnTableAI = clientValue * leadsPerMonth * closeRate;
+
+                if (document.getElementById('recurring-checkbox-outbound').checked) {
+                    monthlyLeftOnTableAI *= 12;
+                }
+
+                generateCumulativeChartMonthly(monthlyCost, monthlyLeftOnTableAI, monthlyLeftOnTableAI * 0.7, startupCost, monthlyCost);
             }
-
-            generateCumulativeChartMonthly(monthlyCost, monthlyLeftOnTableAI, monthlyLeftOnTableAI * 0.7, startupCost, monthlyCost);
         }
 
         function handleRecurringCheckbox() {
@@ -569,6 +602,14 @@
             } else {
                 calculateOutboundROI();
             }
+        }
+
+        function showChartTab(chartId) {
+            const chartTabs = document.getElementsByClassName('chart-tab');
+            for (let i = 0; i < chartTabs.length; i++) {
+                chartTabs[i].classList.remove('active');
+            }
+            document.getElementById(chartId).classList.add('active');
         }
 
         document.querySelector(".tab-link:nth-child(2)").click();
