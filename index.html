@@ -42,7 +42,7 @@
         }
 
         h4 {
-            margin-top:10px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -386,7 +386,10 @@
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderWidth: 2,
                     fill: false,
-                    tension: 0.4
+                    tension: 0.4,
+                    datalabels: {
+                        display: false // Hide original pricing data labels
+                    }
                 },
                 {
                     label: 'Cumulative Projected Sales with AI ($)',
